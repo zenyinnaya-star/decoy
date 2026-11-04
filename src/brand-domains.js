@@ -1,0 +1,22 @@
+// Where each impersonated brand really lives (for "Go there instead?").
+export const BRAND_DOMAINS = {
+  google: "google.com", gmail: "mail.google.com", youtube: "youtube.com", paypal: "paypal.com", amazon: "amazon.com",
+  apple: "apple.com", icloud: "icloud.com", microsoft: "microsoft.com", outlook: "outlook.com", office365: "office.com",
+  facebook: "facebook.com", instagram: "instagram.com", whatsapp: "whatsapp.com", messenger: "messenger.com",
+  netflix: "netflix.com", linkedin: "linkedin.com", twitter: "twitter.com", github: "github.com", dropbox: "dropbox.com",
+  ebay: "ebay.com", walmart: "walmart.com", costco: "costco.com", bestbuy: "bestbuy.com", target: "target.com",
+  shopify: "shopify.com", stripe: "stripe.com", bankofamerica: "bankofamerica.com", wellsfargo: "wellsfargo.com",
+  chase: "chase.com", citibank: "citi.com", capitalone: "capitalone.com", americanexpress: "americanexpress.com",
+  amex: "americanexpress.com", rbc: "rbc.com", td: "td.com", scotiabank: "scotiabank.com", bmo: "bmo.com",
+  cibc: "cibc.com", tangerine: "tangerine.ca", desjardins: "desjardins.com", interac: "interac.ca", hsbc: "hsbc.com",
+  barclays: "barclays.co.uk", canadapost: "canadapost-postescanada.ca", fedex: "fedex.com", ups: "ups.com", dhl: "dhl.com",
+  usps: "usps.com", purolator: "purolator.com", coinbase: "coinbase.com", binance: "binance.com", kraken: "kraken.com",
+  metamask: "metamask.io", ledger: "ledger.com", trezor: "trezor.io", steam: "steampowered.com",
+  steamcommunity: "steamcommunity.com", discord: "discord.com", spotify: "spotify.com", adobe: "adobe.com",
+  docusign: "docusign.com", yahoo: "yahoo.com", airbnb: "airbnb.com", booking: "booking.com", uber: "uber.com",
+  roblox: "roblox.com", epicgames: "epicgames.com", playstation: "playstation.com", xbox: "xbox.com",
+  telegram: "telegram.org", tiktok: "tiktok.com", snapchat: "snapchat.com", venmo: "venmo.com", cashapp: "cash.app",
+  zelle: "zellepay.com", wise: "wise.com", revolut: "revolut.com", cra: "canada.ca", irs: "irs.gov",
+  servicecanada: "canada.ca", rogers: "rogers.com", bell: "bell.ca", telus: "telus.com", verizon: "verizon.com",
+  att: "att.com", tmobile: "t-mobile.com",
+};

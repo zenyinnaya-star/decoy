@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Decoy</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body data-level="scan">
+  <header class="top">
+    <svg id="logo" width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5l8 3v6.2c0 4.7-3.3 8.3-8 10.3-4.7-2-8-5.6-8-10.3V5.5z" fill="currentColor"/><circle cx="12" cy="12" r="4.2" fill="#0f1218"/><circle cx="13.6" cy="10.4" r="1.3" fill="currentColor"/></svg>
+    <h1>Decoy</h1>
+    <span id="autopill" class="pill"><i></i><span id="autotext">Auto-scan on</span></span>
+    <button id="gear" class="icon" aria-label="More protection and settings">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>
+    </button>
+  </header>
+
+  <section class="site">
+    <div id="tile" class="tile">·</div>
+    <div class="sitetext">
+      <div id="host" class="mono">…</div>
+      <div id="hostline">Scanning this page. Nothing leaves your browser.</div>
+    </div>
+  </section>
+
+  <section id="score-card">
+    <div id="ring">
+      <svg width="104" height="104" viewBox="0 0 120 120" role="img" aria-label="Risk score">
+        <circle cx="60" cy="60" r="50" class="track"/>
+        <circle id="arc" cx="60" cy="60" r="50" class="arc" stroke-dasharray="0 314.16" transform="rotate(-90 60 60)"/>
+      </svg>
+      <div class="num"><span id="score">–</span><small>of 100</small></div>
+    </div>
+    <div class="verdict">
+      <div id="level">Scanning…</div>
+      <div id="sub"></div>
+    </div>
+  </section>
+
+  <div id="trustnote" class="note ok" hidden></div>
+
+  <div class="sechead"><h2 id="flagshead">Why this score</h2><span id="flagcount"></span></div>
+  <ul id="flags"></ul>
+  <p id="capnote" class="foot" hidden></p>
+
+  <section id="dummy" hidden>
+    <div class="dlabel">Dummy test</div>
+    <div id="dtitle">Watching…</div>
+    <div id="dhost"></div>
+    <p id="dsub"></p>
+    <ul id="ditems"></ul>
+    <p id="dlimit" class="foot"></p>
+    <button id="dstop" class="btn">Stop &amp; clear</button>
+  </section>
+
+  <div class="actions">
+    <button id="leave" class="btn bad" hidden>Leave this page</button>
+    <button id="dtest" class="btn pri">Test with dummy…</button>
+    <div class="row">
+      <button id="fill" class="btn">Fill fake details</button>
+      <button id="rescan" class="btn">Rescan</button>
+    </div>
+    <div class="row" id="warnrow" hidden>
+      <button id="entered" class="btn">I entered something</button>
+      <button id="report" class="btn">Report wrong score</button>
+    </div>
+    <button id="trust" class="link" hidden>I trust this site</button>
+    <button id="reportlink" class="link" hidden>Report wrong score</button>
+    <p id="msg"></p>
+  </div>
+
+  <details id="more">
+    <summary>More protection</summary>
+
+    <div class="sec">Scanning</div>
+    <div id="seg" class="seg" role="group" aria-label="Automatic scan">
+      <button data-m="auto">In background</button>
+      <button data-m="ask">Ask me</button>
+      <button data-m="off">Off</button>
+    </div>
+    <p class="foot">Background scans use no network. A small notice shows only at "Sketchy" or worse.</p>
+
+    <div class="sec">Guards</div>
+    <label class="tgl"><span><b>Clipboard guard</b><small>Blocks pasted-command and crypto-swap tricks</small></span><input type="checkbox" data-g="clipboard"><i></i></label>
+    <label class="tgl"><span><b>Permission guard</b><small>Holds prompts you didn't click for</small></span><input type="checkbox" data-g="permissions"><i></i></label>
+    <label class="tgl"><span><b>Scare-page guard</b><small>Stops alert loops and back-button traps</small></span><input type="checkbox" data-g="scare"><i></i></label>
+    <label class="tgl"><span><b>Submit speed bump</b><small>A short pause before sending on risky pages</small></span><input type="checkbox" data-g="bump"><i></i></label>
+    <label class="tgl"><span><b>Link mismatch check</b><small>Link text vs where it really goes</small></span><input type="checkbox" data-g="links"><i></i></label>
+    <label class="tgl"><span><b>Check finished downloads</b><small>Needs the downloads permission</small></span><input type="checkbox" data-g="dlscan"><i></i></label>
+    <label class="tgl"><span><b>Pause risky program downloads</b><small>Asks permission first</small></span><input type="checkbox" id="dl"><i></i></label>
+    <label class="tgl"><span><b>Block trackers</b><small>Off by default. May break some sites</small></span><input type="checkbox" id="trk"><i></i></label>
+    <label class="tgl"><span><b>Domain age lookup</b><small>Sends the domain name to rdap.org</small></span><input type="checkbox" id="age"><i></i></label>
+    <p class="foot" id="listage"></p>
+
+    <button id="pause" class="btn">Pause Decoy on this site</button>
+
+    <div class="sec">Check a link or message</div>
+    <textarea id="pre" rows="3" placeholder="Paste a link, email or text. Nothing is opened."></textarea>
+    <button id="precheck" class="btn">Check it</button>
+    <div id="preout"></div>
+
+    <div class="sec">Check a file</div>
+    <label class="drop" for="filepick">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>
+      <span>Pick a file to check it here. Nothing is uploaded.</span>
+    </label>
+    <input type="file" id="filepick" class="visually-hidden">
+    <div id="fileout"></div>
+    <p class="foot" id="fileaccess"></p>
+    <button id="fileaccessbtn" class="btn" hidden>Open Decoy's extension settings</button>
+
+    <div class="sec">Protect each other (optional)</div>
+    <p class="foot" style="margin-top:0">Needs your own Decoy cloud. Nothing here is on until you turn it on.</p>
+    <input id="cloudurl" class="in" type="url" placeholder="https://decoy-cloud.your-name.workers.dev" aria-label="Decoy cloud address">
+    <button id="cloudsave" class="btn">Save and test connection</button>
+    <p class="foot" id="cloudstatus"></p>
+    <div id="cloudbox" hidden>
+      <label class="tgl"><span><b>Use shared warnings</b><small>Sites that several other people's tests caught. Sends only a download request.</small></span><input type="checkbox" id="useshared"><i></i></label>
+      <label class="tgl"><span><b>Help warn others</b><small>When your dummy test catches a data grabber, share the site address and the type of finding. Nothing you typed.</small></span><input type="checkbox" id="sharereports"><i></i></label>
+
+      <div class="sec">Trusted people</div>
+      <p class="foot" style="margin-top:0">If you land on a very risky page, they get a short email: the scam site's address, the time, and whether you typed anything. Never what you typed or what you browse. They must say yes first, and you can remove them any time.</p>
+      <ul id="glist"></ul>
+      <input id="gname" class="in" type="text" maxlength="60" placeholder="Their name" aria-label="Trusted person's name">
+      <input id="gemail" class="in" type="email" maxlength="254" placeholder="Their email" aria-label="Trusted person's email">
+      <input id="gyou" class="in" type="text" maxlength="60" placeholder="Your name (so they know it's you)" aria-label="Your name">
+      <button id="ginvite" class="btn">Send invite</button>
+      <p class="foot" id="gmsg"></p>
+    </div>
+
+    <div class="sec">If you already typed something</div>
+    <button id="rec" class="btn">Recovery checklist…</button>
+    <div id="recbox" hidden>
+      <div id="recpick"></div>
+      <ol id="recout"></ol>
+      <button id="recremind" class="btn">Remind me tomorrow</button>
+    </div>
+  </details>
+
+  <p class="foot end">Decoy never submits a form for you. Cards use the 4242 test number.</p>
+
+  <script src="popup.js"></script>
+</body>
+</html>

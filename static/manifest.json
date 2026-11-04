@@ -1,0 +1,99 @@
+{
+  "manifest_version": 3,
+  "name": "Decoy",
+  "version": "0.8.0",
+  "minimum_chrome_version": "111",
+  "description": "Fill forms with fake data, score a page for scam signals, and test where a form really sends your details.",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "contextMenus",
+    "downloads",
+    "alarms",
+    "notifications",
+    "declarativeNetRequest"
+  ],
+  "host_permissions": [
+    "https://rdap.org/*",
+    "https://rdap.verisign.com/*",
+    "https://rdap.publicinterestregistry.org/*",
+    "https://rdap.identitydigital.services/*",
+    "https://rdap.nic.xyz/*",
+    "https://rdap.centralnic.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Decoy",
+    "default_icon": {
+      "16": "icon16.png", "32": "icon32.png",
+      "48": "icon48.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "watcher.js"
+      ],
+      "world": "MAIN",
+      "run_at": "document_start",
+      "all_frames": true,
+      "match_about_blank": true
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "guard.js"
+      ],
+      "world": "MAIN",
+      "run_at": "document_start",
+      "all_frames": true,
+      "match_about_blank": true
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "bridge.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true,
+      "match_about_blank": true
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icon16.png", "32": "icon32.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "trackers",
+        "enabled": false,
+        "path": "trackers.json"
+      }
+    ]
+  }
+}

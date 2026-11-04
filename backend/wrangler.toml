@@ -1,0 +1,16 @@
+name = "decoy-cloud"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+
+[vars]
+# Where the confirm links point. Change to your own domain once you have one.
+PUBLIC_URL = "https://decoy-cloud.YOUR-SUBDOMAIN.workers.dev"
+MAIL_FROM = "Decoy <alerts@YOUR-DOMAIN>"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "decoy"
+database_id = "PASTE-ID-FROM-wrangler-d1-create"
+migrations_dir = "migrations"
+
+# Secrets (set with `wrangler secret put`): SALT, RESEND_API_KEY

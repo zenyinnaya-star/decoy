@@ -1,0 +1,10 @@
+node_modules/
+dist/
+data/
+crawl-report.md
+*.zip
+.DS_Store
+*.log
+backend/.wrangler/
+backend/.dev.vars
+.env
