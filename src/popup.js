@@ -245,8 +245,16 @@ setInterval(refreshDummy, 1500); // live while the popup is open
   };
   showMode(mode);
   for (const b of document.querySelectorAll("#seg button")) b.onclick = () => { chrome.storage.local.set({ mode: b.dataset.m }); showMode(b.dataset.m); };
-  $("ads").checked = (await chrome.runtime.sendMessage({ type: "ads:get" }))?.on || false;
-  $("ads").onchange = () => chrome.runtime.sendMessage({ type: "ads:set", on: $("ads").checked });
+  const showAds = (on) => {
+    $("ads").checked = on;
+    $("adbtn").setAttribute("aria-pressed", String(on));
+    $("adbtn").classList.toggle("on", on);
+    $("adbtntext").textContent = on ? "Block ads: On" : "Block ads: Off";
+  };
+  showAds((await chrome.runtime.sendMessage({ type: "ads:get" }))?.on || false);
+  const setAds = async (on) => { const r = await chrome.runtime.sendMessage({ type: "ads:set", on }); showAds(!!r?.on); if (r?.on !== undefined) { $("msg").textContent = r.on ? "Ad blocking on. Reload this page to apply it." : "Ad blocking off."; } };
+  $("ads").onchange = () => setAds($("ads").checked);
+  $("adbtn").onclick = () => setAds(!$("adbtn").classList.contains("on"));
   $("trk").checked = (await chrome.runtime.sendMessage({ type: "trackers:get" }))?.on || false;
   $("trk").onchange = () => chrome.runtime.sendMessage({ type: "trackers:set", on: $("trk").checked });
 })();

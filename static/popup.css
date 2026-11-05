@@ -148,3 +148,9 @@ textarea { display: block; width: 100%; background: var(--bg); color: var(--fg);
 #glist li { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid #1c2230; font-size: 14px; }
 #glist li small { color: var(--mute); font-size: 12px; }
 #glist li button { margin-left: auto; flex: none; min-height: 32px; padding: 0 12px; font-size: 12px; }
+
+/* Block ads quick button */
+.adbtn { gap: 8px; }
+.adbtn .adico { width: 8px; height: 8px; border-radius: 50%; background: var(--mute); flex: none; }
+.adbtn.on { border-color: #2f6b45; background: #12251a; color: #7ee2a0; }
+.adbtn.on .adico { background: #7ee2a0; }
