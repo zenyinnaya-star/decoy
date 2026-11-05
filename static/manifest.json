@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Decoy",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "minimum_chrome_version": "111",
   "description": "Fill forms with fake data, score a page for scam signals, and test where a form really sends your details.",
   "permissions": [

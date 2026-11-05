@@ -416,3 +416,6 @@ async function connect(save) {
   };
   if (s.cloudUrl) connect(false);
 })();
+
+// Which build is this? Helps tell whether a reload picked up the latest code.
+(async () => { try { const b = await (await fetch(chrome.runtime.getURL("build.json"))).json(); $("ver").textContent = `v${chrome.runtime.getManifest().version} · built ${b.date}${b.stamp ? " " + new Date(b.stamp).toISOString().slice(11, 16) + " UTC" : ""}`; } catch {} })();
