@@ -7,7 +7,38 @@ import * as cloud from "./cloud.js";
 const $ = (id) => document.getElementById(id);
 const forcedTab = new URLSearchParams(location.search).get("tab"); // dev/test only: point the popup at a specific tab
 const tab = () => (forcedTab ? chrome.tabs.get(+forcedTab) : chrome.tabs.query({ active: true, currentWindow: true }).then((t) => t[0]));
-const toTab = async (type) => chrome.tabs.sendMessage((await tab()).id, { type }, { frameId: 0 });
+const send = (id, type) => chrome.tabs.sendMessage(id, { type }, { frameId: 0 });
+// Pages opened before Decoy was installed or updated have no scripts yet: add them now (activeTab allows it), then retry.
+async function inject(t) {
+  const target = { tabId: t.id, allFrames: false };
+  await chrome.scripting.executeScript({ target, files: ["bridge.js"] });
+  await chrome.scripting.executeScript({ target, files: ["watcher.js", "guard.js"], world: "MAIN" });
+  await chrome.scripting.executeScript({ target, files: ["content.js"] });
+}
+const toTab = async (type) => {
+  const t = await tab();
+  try { return await send(t.id, type); }
+  catch (e) {
+    if (!/^(https?|file):/.test(t.url || "")) throw e;
+    await inject(t);
+    return send(t.id, type);
+  }
+};
+
+// Why a page can't be scanned, in plain words. Chrome itself blocks extensions on some pages.
+async function whyNot(t) {
+  const u = t?.url || "";
+  if (!u || /^(chrome|edge|about|chrome-search|chrome-untrusted|devtools):/.test(u)) return ["Chrome's own page", "Chrome doesn't let any extension run on its own pages (settings, new tab, downloads). Nothing here to scan."];
+  if (/^chrome-extension:/.test(u)) return ["An extension page", "Chrome keeps extension pages private from other extensions."];
+  if (/^view-source:/.test(u)) return ["Source view", "Open the normal page to scan it."];
+  if (/^https:\/\/(chrome\.google\.com\/webstore|chromewebstore\.google\.com)/.test(u)) return ["Chrome Web Store", "Chrome blocks extensions on the Web Store. This is Google's own site."];
+  if (/^file:/.test(u)) {
+    let ok = false; try { ok = await chrome.extension.isAllowedFileSchemeAccess(); } catch {}
+    if (!ok) return ["Local file", "To scan files on your computer, switch on \"Allow access to file URLs\" for Decoy in chrome://extensions."];
+  }
+  if (/\.pdf($|[?#])/i.test(u)) return ["PDF in Chrome's viewer", "Chrome's PDF viewer blocks extensions. Download the file and use \"Check a file\" under More protection."];
+  return ["Can't scan this page", "This page didn't answer. Try Rescan, or reload the page once."];
+}
 
 let current = null;
 let pageScore = 0;
@@ -109,8 +140,11 @@ async function run() {
   } catch {
     document.body.dataset.level = "scan";
     $("arc").setAttribute("stroke-dasharray", `0 ${ARC}`);
-    $("level").textContent = "Can't scan this page";
-    $("sub").textContent = "Works on normal http(s) pages. Reload the page once after installing.";
+    const t0 = await tab().catch(() => null);
+    try { $("host").textContent = new URL(t0.url).hostname || t0.url.split(":")[0] + " page"; } catch { $("host").textContent = "This page"; }
+    const [title, why] = await whyNot(t0);
+    $("level").textContent = title;
+    $("sub").textContent = why;
     $("score").textContent = "–";
     $("flagshead").parentElement.hidden = true;
   }

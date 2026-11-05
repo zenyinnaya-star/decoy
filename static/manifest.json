@@ -6,6 +6,7 @@
   "description": "Fill forms with fake data, score a page for scam signals, and test where a form really sends your details.",
   "permissions": [
     "activeTab",
+    "scripting",
     "storage",
     "contextMenus",
     "downloads",
@@ -36,7 +37,8 @@
     {
       "matches": [
         "http://*/*",
-        "https://*/*"
+        "https://*/*",
+        "file:///*"
       ],
       "js": [
         "watcher.js"
@@ -49,7 +51,8 @@
     {
       "matches": [
         "http://*/*",
-        "https://*/*"
+        "https://*/*",
+        "file:///*"
       ],
       "js": [
         "guard.js"
@@ -62,7 +65,8 @@
     {
       "matches": [
         "http://*/*",
-        "https://*/*"
+        "https://*/*",
+        "file:///*"
       ],
       "js": [
         "bridge.js"
@@ -74,7 +78,8 @@
     {
       "matches": [
         "http://*/*",
-        "https://*/*"
+        "https://*/*",
+        "file:///*"
       ],
       "js": [
         "content.js"
