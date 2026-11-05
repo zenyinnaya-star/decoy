@@ -26,7 +26,8 @@
     "default_popup": "popup.html",
     "default_title": "Decoy",
     "default_icon": {
-      "16": "icon16.png", "32": "icon32.png",
+      "16": "icon16.png",
+      "32": "icon32.png",
       "48": "icon48.png"
     }
   },
@@ -85,10 +86,22 @@
         "content.js"
       ],
       "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "ads.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true
     }
   ],
   "icons": {
-    "16": "icon16.png", "32": "icon32.png",
+    "16": "icon16.png",
+    "32": "icon32.png",
     "48": "icon48.png",
     "128": "icon128.png"
   },
@@ -98,6 +111,11 @@
         "id": "trackers",
         "enabled": false,
         "path": "trackers.json"
+      },
+      {
+        "id": "ads",
+        "enabled": false,
+        "path": "ads.json"
       }
     ]
   }

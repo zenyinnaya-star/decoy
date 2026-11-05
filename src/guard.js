@@ -7,8 +7,9 @@ import clipboard from "./guards/clipboard.js";
 import permissions from "./guards/permissions.js";
 import scare from "./guards/scare.js";
 import skimmer from "./guards/skimmer.js";
+import adpopups from "./guards/adpopups.js";
 
-const GUARDS = [clipboard, permissions, scare, skimmer];
+const GUARDS = [clipboard, permissions, scare, skimmer, adpopups];
 
 (() => {
   const thunks = GUARDS.flatMap((g) => { try { return g.targets(); } catch { return []; } });

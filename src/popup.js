@@ -245,6 +245,8 @@ setInterval(refreshDummy, 1500); // live while the popup is open
   };
   showMode(mode);
   for (const b of document.querySelectorAll("#seg button")) b.onclick = () => { chrome.storage.local.set({ mode: b.dataset.m }); showMode(b.dataset.m); };
+  $("ads").checked = (await chrome.runtime.sendMessage({ type: "ads:get" }))?.on || false;
+  $("ads").onchange = () => chrome.runtime.sendMessage({ type: "ads:set", on: $("ads").checked });
   $("trk").checked = (await chrome.runtime.sendMessage({ type: "trackers:get" }))?.on || false;
   $("trk").onchange = () => chrome.runtime.sendMessage({ type: "trackers:set", on: $("trk").checked });
 })();

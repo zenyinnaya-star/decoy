@@ -269,6 +269,18 @@ chrome.runtime.onMessage.addListener((msg, sender, send) => {
     chrome.alarms.create("decoy-recovery", { delayInMinutes: 24 * 60 });
     send({ ok: true }); return;
   }
+  if (msg?.type === "ads:get") { chrome.storage.local.get("adblock").then((r) => send({ on: !!r.adblock })); return true; }
+  if (msg?.type === "ads:set") {
+    (async () => {
+      const on = !!msg.on;
+      const { off = {} } = await chrome.storage.local.get("off");
+      off.adblock = !on; // false = explicitly on (default-off feature, see ctx.opt)
+      await chrome.storage.local.set({ adblock: on, off });
+      await chrome.declarativeNetRequest.updateEnabledRulesets(on ? { enableRulesetIds: ["ads"] } : { disableRulesetIds: ["ads"] });
+      send({ on });
+    })();
+    return true;
+  }
   if (msg?.type === "trackers:get") { chrome.declarativeNetRequest.getEnabledRulesets().then((r) => send({ on: r.includes("trackers") })); return true; }
   if (msg?.type === "trackers:set") {
     chrome.declarativeNetRequest.updateEnabledRulesets(msg.on ? { enableRulesetIds: ["trackers"] } : { disableRulesetIds: ["trackers"] }).then(() => send({ on: !!msg.on }));

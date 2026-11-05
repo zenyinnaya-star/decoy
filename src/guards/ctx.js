@@ -10,6 +10,8 @@ export function makeCtx() {
   document.addEventListener("decoy:config", (e) => { try { cfg = { ...cfg, ...JSON.parse(e.detail) }; } catch {} flush(); });
 
   const on = (name, trustedSkips = false) => !cfg.paused && !(cfg.off && cfg.off[name]) && !(trustedSkips && cfg.trusted);
+  // Opt-in features (default OFF): on only when the popup has explicitly set off[name] === false.
+  const opt = (name) => !cfg.paused && !!cfg.off && cfg.off[name] === false;
   const gesture = () => { try { return navigator.userActivation ? navigator.userActivation.isActive : true; } catch { return true; } };
   const lure = () => { try { return LURE.test((document.body?.innerText || "").slice(0, 20000)); } catch { return false; } };
 
@@ -68,5 +70,5 @@ export function makeCtx() {
   };
   const teardown = () => { while (undo.length) undo.pop()(); };
 
-  return { get cfg() { return cfg; }, on, gesture, lure, emit, closeTab, chip, allowOnce, whenReady, patch, patchDesc, teardown };
+  return { get cfg() { return cfg; }, on, opt, gesture, lure, emit, closeTab, chip, allowOnce, whenReady, patch, patchDesc, teardown };
 }
