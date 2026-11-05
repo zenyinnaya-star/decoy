@@ -5,6 +5,8 @@
   "main": "background.js",
   "scripts": {
     "build": "node scripts/build.mjs",
+    "dev": "node scripts/dev.mjs",
+    "update": "git pull && npm install && npm run dev",
     "lists": "node scripts/build-lists.mjs",
     "test": "node --test test/*.test.js",
     "test:backend": "node --test backend/test/app.test.js",

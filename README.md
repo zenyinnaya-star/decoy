@@ -134,3 +134,8 @@ Needs your own Decoy cloud (see `backend/DEPLOY.md`; `node backend/dev-server.mj
 - **Help warn others:** when your dummy test catches a grabber, send the site address and the type of finding. Nothing you typed.
 - **Trusted people:** up to 3. They must say yes by email first (or "No thanks", which blocks them for good). They get an email when you stay 30 seconds on a Likely-scam page, submit through the warning, or download a dangerous file. The email has the site, the time and whether you typed anything, never what you typed. Dummy tests never trigger alerts.
 - Test: `npm run e2e:cloud`, `npm run test:backend`.
+
+## Testing updates on your own machine (no store needed)
+- One time: `git clone https://github.com/zenyinnaya-star/decoy.git`, `cd decoy`, `npm install`, `npm run build`, then at `chrome://extensions` turn on Developer mode and "Load unpacked" the `dist` folder.
+- Every update: `git pull && npm run build`, then press the reload arrow on the Decoy card.
+- Hands-free: `npm run dev` rebuilds on every change and the extension reloads itself within a couple of seconds. (`npm run update` = pull, install, dev.) Test builds only.

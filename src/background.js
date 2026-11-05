@@ -436,3 +436,11 @@ chrome.runtime.onMessage.addListener((msg, sender, send) => {
     return true;
   }
 });
+
+// Dev only (npm run dev): reload the extension by itself when the build changes. Not in the release build.
+if (__DEV__) {
+  let stamp = null;
+  setInterval(async () => {
+    try { const b = await (await fetch(chrome.runtime.getURL("build.json"), { cache: "no-store" })).json(); if (stamp && b.stamp !== stamp) chrome.runtime.reload(); stamp = b.stamp; } catch {}
+  }, 1500);
+}
