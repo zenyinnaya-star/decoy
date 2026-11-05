@@ -102,10 +102,15 @@ export async function handle(req, env, deps = {}) {
       const gid = rand(9), token = rand(24);
       await env.DB.prepare("INSERT INTO guardians (id, install_id, email, name, requester, status, token_hash, created_at) VALUES (?, ?, ?, ?, ?, 'pending', ?, ?)").bind(gid, id, email, name, requester, await sha256(token), now).run();
       const base = env.PUBLIC_URL.replace(/\/+$/, "");
-      await mail(email, `${requester} would like you as a trusted person on Decoy`,
-        `Hi ${name},\n\n${requester} uses Decoy, a browser tool that warns about scam websites. They'd like you to be a trusted person: if they land on a very risky page, you'd get a short email so you can check in with them.\n\n` +
-        `What you'd get: the scam site's address, the time, and whether ${requester} typed anything into it.\nWhat you would NOT get: what they typed, the pages they visit, or any browsing history.\n\n` +
-        `Yes, I'll be their trusted person:\n${base}/v1/confirm?t=${token}&a=yes\n\nNo thanks (and please don't ask me again):\n${base}/v1/confirm?t=${token}&a=no\n\nIf you do nothing, nothing happens. ${requester} can remove you any time, and so can you using the link in any alert.\n`);
+      try {
+        await mail(email, `${requester} would like you as a trusted person on Decoy`,
+          `Hi ${name},\n\n${requester} uses Decoy, a browser tool that warns about scam websites. They'd like you to be a trusted person: if they land on a very risky page, you'd get a short email so you can check in with them.\n\n` +
+          `What you'd get: the scam site's address, the time, and whether ${requester} typed anything into it.\nWhat you would NOT get: what they typed, the pages they visit, or any browsing history.\n\n` +
+          `Yes, I'll be their trusted person:\n${base}/v1/confirm?t=${token}&a=yes\n\nNo thanks (and please don't ask me again):\n${base}/v1/confirm?t=${token}&a=no\n\nIf you do nothing, nothing happens. ${requester} can remove you any time, and so can you using the link in any alert.\n`);
+      } catch (e) {
+        await env.DB.prepare("DELETE FROM guardians WHERE id = ?").bind(gid).run();
+        throw new HttpError(503, "This Decoy cloud can't send email yet. Add the email key (RESEND_API_KEY), then try again.");
+      }
       return json({ ok: true, id: gid }, 201);
     }
 
