@@ -25,6 +25,22 @@ const CAP_NOTE = {
   "one-strong": "One strong sign tops out at \"Sketchy\". \"Likely scam\" needs two strong signs or a match on a known scam list.",
 };
 
+// Site logo in the tile: the tab's own favicon (already loaded by the browser). Letter is the fallback.
+let favUrl = "";
+tab().then((t) => { favUrl = t && /^(https?:|data:image\/)/.test(t.favIconUrl || "") ? t.favIconUrl : ""; setTile(); }).catch(() => {});
+let tileLetter = "·";
+function setTile(letter) {
+  if (letter) tileLetter = letter;
+  const el = $("tile");
+  if (!favUrl) { el.textContent = tileLetter; el.classList.remove("logo"); return; }
+  if (el.querySelector("img")?.src === favUrl) return;
+  const img = new Image();
+  img.alt = "";
+  img.onerror = () => { favUrl = ""; setTile(); };
+  img.onload = () => { el.replaceChildren(img); el.classList.add("logo"); };
+  img.src = favUrl;
+}
+
 function render(res) {
   const r = computeScore(res.flags, { trustKind: res.trustKind });
   pageScore = r.score;
@@ -34,7 +50,7 @@ function render(res) {
   $("arc").classList.toggle("zero", r.score === 0);
   $("level").textContent = r.level;
   $("sub").textContent = r.sub;
-  $("tile").textContent = (res.domain || $("host").textContent || "·").replace(/^www\./, "")[0] || "·";
+  setTile((res.domain || $("host").textContent || "·").replace(/^www\./, "")[0] || "·");
   $("hostline").textContent = res.domain && res.age != null ? `Registered ${res.age} day(s) ago` : "Scanned just now. Nothing left your browser.";
 
   const note = $("trustnote");

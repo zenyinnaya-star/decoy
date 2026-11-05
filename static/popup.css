@@ -31,6 +31,8 @@ h1 { margin: 0; font-size: 16px; font-weight: 600; letter-spacing: .2px; }
 
 /* site row */
 .site { display: flex; align-items: center; gap: 12px; padding: 14px 16px; }
+.tile.logo { background: #fff; padding: 5px; box-sizing: border-box; }
+.tile img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .tile { width: 36px; height: 36px; border-radius: 8px; background: #1d2330; display: grid; place-items: center; font-weight: 600; color: var(--mute); flex: none; text-transform: uppercase; }
 body[data-level="likely"] .tile, body[data-level="sketchy"] .tile { background: #2a1517; color: #ff9a9a; }
 .sitetext { min-width: 0; }
