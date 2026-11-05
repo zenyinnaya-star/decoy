@@ -1,3 +1,4 @@
+import { domFindings, headerFindings, grade, SEV_ORDER } from "./sitecheck.js";
 // Top frame only (document_idle). Scan, fill, and the dummy-test controls.
 import { scan } from "./scanner.js";
 import { fill } from "./fill.js";
@@ -60,6 +61,21 @@ chrome.runtime.onMessage.addListener((msg, _s, reply) => {
   if (msg?.type === "dl:result") { reply({ shown: showDownloadResult(msg) }); return; }
   if (msg?.type === "dl:ask") { reply({ shown: askDownload(msg) }); return; }
   if (msg?.type === "scan") { reply(scan(document, location)); return; }
+  if (msg?.type === "sitesec") {
+    (async () => {
+      const found = domFindings(document, location);
+      const sensitive = !!document.querySelector('input[type="password"], input[autocomplete^="cc-"]');
+      let headers = null;
+      try { // one request to the site you are already on; no cookies sent, nothing sent anywhere else
+        const r = await fetch(location.href, { method: "HEAD", credentials: "omit", cache: "force-cache", redirect: "follow" });
+        headers = Object.fromEntries([...r.headers.entries()].map(([k, v]) => [k.toLowerCase(), v]));
+      } catch {}
+      if (headers) found.push(...headerFindings(headers, location, sensitive));
+      found.sort((a, b) => SEV_ORDER[a.sev] - SEV_ORDER[b.sev]);
+      reply({ host: location.hostname, findings: found, grade: grade(found), headers: !!headers });
+    })();
+    return true;
+  }
   if (msg?.type === "fill") { reply(fill()); return; }
 
   if (msg?.type === "dummy:start") {

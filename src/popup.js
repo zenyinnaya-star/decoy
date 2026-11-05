@@ -419,3 +419,33 @@ async function connect(save) {
 
 // Which build is this? Helps tell whether a reload picked up the latest code.
 (async () => { try { const b = await (await fetch(chrome.runtime.getURL("build.json"))).json(); $("ver").textContent = `v${chrome.runtime.getManifest().version} · built ${b.date}${b.stamp ? " " + new Date(b.stamp).toISOString().slice(11, 16) + " UTC" : ""}`; } catch {} })();
+
+// ---- Site security check (on demand) ---------------------------------------------------------------
+const SEV_LABEL = { high: "High", medium: "Medium", low: "Low", info: "Info" };
+$("secbtn").onclick = async () => {
+  const box = $("secbox"), btn = $("secbtn");
+  btn.disabled = true; btn.textContent = "Checking…";
+  try {
+    const r = await toTab("sitesec");
+    box.replaceChildren();
+    const head = document.createElement("div"); head.className = "sechead2";
+    const g = document.createElement("span"); g.className = "grade g" + r.grade.letter; g.textContent = r.grade.letter;
+    const t = document.createElement("div");
+    const b = document.createElement("b"); b.textContent = r.findings.length ? `${r.findings.length} thing${r.findings.length === 1 ? "" : "s"} to know` : "Nothing found";
+    const sm = document.createElement("small"); sm.textContent = "Site security grade. This is about how well the site is built, not whether it's a scam.";
+    t.append(b, sm); head.append(g, t); box.append(head);
+    for (const f of r.findings) {
+      const d = document.createElement("details"); d.className = "finding s-" + f.sev;
+      const s = document.createElement("summary");
+      const tag = document.createElement("i"); tag.textContent = SEV_LABEL[f.sev];
+      s.append(tag, document.createTextNode(f.label)); // label text from the page: text node only
+      const p = document.createElement("p"); p.textContent = f.why + " " + f.fix;
+      d.append(s, p); box.append(d);
+    }
+    const note = document.createElement("p"); note.className = "foot";
+    note.textContent = r.headers ? "Read from this page and the headers this site sent. Nothing was tested or attacked." : "Read from this page only. The site wouldn't show its headers.";
+    box.append(note); box.hidden = false;
+    btn.textContent = "Check again";
+  } catch { box.hidden = true; btn.textContent = "Can't check this page"; }
+  btn.disabled = false;
+};

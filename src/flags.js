@@ -27,6 +27,7 @@ export const FLAGS = {
   brandmismatch: F("page", "strong", 30, "Page says it is a brand but the address is not theirs", "The page text claims a famous name while the address belongs to someone else."),
   xform: F("page", "strong", 25, "Form sends your details to another site", "Your password or card goes somewhere other than the site you are on."),
   insecureform: F("page", "strong", 35, "Form sends your details without encryption", "Details typed here can be read in transit."),
+  getlogin: F("page", "weak", 12, "Password form puts the password in the web address", "A form that sends the password with method GET leaves it in history, logs and the Referer header."),
   mixed: F("page", "weak", 10, "Secure page loads insecure content", "Part of the page can be tampered with in transit."),
   nocontact: F("page", "weak", 8, "Shop has no contact details", "Real shops tell you how to reach them."),
   norefund: F("page", "weak", 6, "Shop has no refund or returns policy", "Missing policies are common on fake shops."),

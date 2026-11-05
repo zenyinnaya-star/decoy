@@ -154,3 +154,18 @@ textarea { display: block; width: 100%; background: var(--bg); color: var(--fg);
 .adbtn .adico { width: 8px; height: 8px; border-radius: 50%; background: var(--mute); flex: none; }
 .adbtn.on { border-color: #2f6b45; background: #12251a; color: #7ee2a0; }
 .adbtn.on .adico { background: #7ee2a0; }
+
+/* Site security check */
+#secbox { width: 100%; margin: -2px 0 6px; }
+.sechead2 { display: flex; gap: 12px; align-items: center; padding: 10px 2px; }
+.sechead2 small { display: block; color: var(--mute); font-size: 12px; line-height: 1.35; }
+.grade { width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; font: 700 20px/1 "IBM Plex Sans", sans-serif; flex: none; background: var(--card2); }
+.grade.gA, .grade.gB { color: #0b2315; background: var(--mint); }
+.grade.gC { color: #2a2205; background: #e8c45a; }
+.grade.gD, .grade.gF { color: #2a0707; background: var(--red); }
+.finding { border-top: 1px solid var(--line2); padding: 8px 2px; font-size: 13px; }
+.finding summary { cursor: pointer; display: flex; gap: 8px; align-items: baseline; list-style: none; }
+.finding summary i { font: 600 10px/1 "IBM Plex Sans", sans-serif; text-transform: uppercase; letter-spacing: .5px; padding: 3px 5px; border-radius: 4px; background: var(--card2); color: var(--mute); font-style: normal; flex: none; }
+.finding.s-high summary i { background: #3a1717; color: #ff9a9a; }
+.finding.s-medium summary i { background: #3a2f12; color: #f0cf6f; }
+.finding p { margin: 6px 0 2px; color: var(--mute); line-height: 1.4; }
