@@ -26,7 +26,7 @@ export function domFindings(doc, loc) {
   else if (!https && !loop(host)) out.push(F("http", "medium", "Page isn't encrypted (http)", "Others on the network can read or change this page on its way to you.", "Use the https:// version if the site has one."));
 
   for (const f of doc.querySelectorAll("form")) {
-    const method = (f.getAttribute("method") || "get").toLowerCase();
+    const method = (f.getAttribute("method") || "").toLowerCase(); // explicit only: forms with no method are often submitted by script
     if (method === "get" && f.querySelector('input[type="password"]'))
       out.push(F("get-password", "high", "Password form sends the password in the web address", "The password ends up in browser history, server logs and the Referer header.", "If this is your site: change the form to method=\"post\"."));
     try {

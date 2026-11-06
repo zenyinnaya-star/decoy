@@ -222,8 +222,8 @@ export function pageFlags(doc, loc) {
         add("insecureform", "This form sends your details without encryption (plain http)", 35, { tier: "strong" });
     } catch {}
   });
-  // Password form using GET: the password ends up in the address.
-  if ([...doc.querySelectorAll("form")].some((f) => (f.getAttribute("method") || "get").toLowerCase() === "get" && f.querySelector('input[type="password"]')))
+  // Password form that explicitly says method=get. (No method attribute is not flagged: script-submitted forms often omit it.)
+  if ([...doc.querySelectorAll("form")].some((f) => (f.getAttribute("method") || "").toLowerCase() === "get" && f.querySelector('input[type="password"]')))
     add("getlogin", "Password form puts the password in the web address", 12);
   // HTTPS page that pulls scripts over plain http.
   if (loc.protocol === "https:" && [...doc.querySelectorAll("script[src]")].some((s) => /^http:\/\//i.test(s.getAttribute("src")) && !isLoopback(new URL(s.getAttribute("src")).hostname)))

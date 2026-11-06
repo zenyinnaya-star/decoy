@@ -16,6 +16,11 @@ test("login over http is high", () => {
   assert.ok(ids(f).includes("login-http")); assert.equal(grade(f).letter, "D");
 });
 test("loopback http is not flagged", () => assert.deepEqual(find("http://localhost:3000/", `<input type="password">`), []));
+test("login form with no method attribute is NOT flagged (script-submitted forms)", () => {
+  assert.ok(!ids(find("https://a.example/", `<form><input type="password"></form>`)).includes("get-password"));
+  const r = evaluate("https://honest-bakery.example/login", `<title>Login</title><a href="/privacy">Privacy</a><form><input type="password"></form>`);
+  assert.ok(!r.flags.some((f) => f.id === "getlogin"));
+});
 test("password form using GET", () => assert.ok(ids(find("https://a.example/", `<form method="get"><input type="password"></form>`)).includes("get-password")));
 test("https page loading http script is mixed-active (high); http image is low", () => {
   const f = find("https://a.example/", `<script src="http://cdn.example/x.js"></script><img src="http://cdn.example/i.png">`);
